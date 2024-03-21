@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<body>
+<h1>Inventory Lookup</h1>
+<h2>Lookup using onpaste Event</h2>
+
+<input type="text" onpaste="myFunction()" value="Paste something here" size="40">
+
+<p id="demo"></p>
+
+<script>
+function myFunction() {
+  document.getElementById("demo").innerHTML = "You pasted text!";
+
+  let data = {yourparam1:"ACME Studios" , yourparam2: 21};
+  infor.companyon.client.sendMessage("TroyTest", data);
+}
+
+/*! 
+ *  Infor OS Portal Companyon Client - v2.3.1
+ *  Date: 2023-10-20T07:06:14.431Z
+ */ 
+class CompanyonClient{constructor(){this.handlers={};this.isReady=!1;this.originalWindowName=window.name;this.init()}sendRelayMessage(a,b){this.sendMessage("prepareRelayProxyMessage",{type:a,data:b,iframeName:window.name})}sendMessageToParent(a,b){window.postMessage&&window.parent!=window&&(a=JSON.stringify({type:"workspaceProxyMessage",data:{type:a,data:b,iframeName:window.name},iframeName:window.name}),window.parent.postMessage(a,"*"))}sendMessage(a,b,c){a={type:a,data:b,iframeName:window.name};
+b=JSON.stringify(a);this.trySendMobile(b);window.opener?this.trySendOpener(b):(this.checkWindowName(),c?c.postMessage(b,"*"):window.top!=window&&(c=JSON.stringify({type:"workspaceProxyMessage",data:a,iframeName:window.name}),window.top.postMessage(c,"*")))}sendMessageProxy(a){}sendPrepareDrillbackMessage(a){this.sendMessage("prepareApplicationDrillback",{link:a})}sendPrepareFavoritesMessage(a){this.sendMessage("prepareFavoriteContext",{link:a})}registerMessageHandler(a,b,c,d){this.mandatory(a,"messageType");
+this.mandatory(b,"handler");const e={messageType:a,source:"default",namespace:c};4==arguments.length?(this.addHandler(e,b),this.sendMessageToParent("workspaceClientSubscribe",{messageType:a,iframeName:window.name})):this.registerDefault(e,b)}registerDefault(a,b){this.addHandler(a,b);this.sendMessage("workspaceClientSubscribe",{messageType:a.messageType,iframeName:window.name})}register(a,b){this.mandatory(a,"options");this.mandatory(b,"handler");this.mandatory(a.messageType,"options.messageType");
+"push"===a.source?(this.mandatory(a.application,"options.application"),this.registerPush(a,b)):this.registerDefault(a,b)}unRegister(a){this.mandatory(a,"options");this.mandatory(a.messageType,"options.messageType");"push"===a.source?(this.mandatory(a.application,"options.application"),this.unRegisterMessageHandlerInternal(a.messageType,null,!1)&&this.unRegisterPush(a)):this.unRegisterMessageHandlerInternal(a.messageType,a.namespace,!0)}unRegisterMessageHandler(a,b){this.unRegisterMessageHandlerInternal(a,
+b,!0)}getEnvironmentInformation(a,b){this.executeDynamic("getEnvironmentInformation","processEnvironmentInformation_",a,b)}getInforMingleHomeUrl(a,b){this.executeDynamic("getInforMingleHomeUrl","processInforMingleHomeUrl_",a,b)}getApplicationParameters(a,b){this.executeDynamic("getApplicationParameters","applicationParameters_",a,b)}sendMobileMessage(a,b){let c;if("string"===typeof b)try{c=JSON.parse(b)}catch(d){c=b}else c=b;b=this.getHandlers(a);this.deliver(b,c,a)}getMobileOperatingSystem(){this.detectMobileOS();
+return this.mobileOS}adjustHeight(a){this.sendMessage(window.name,{height:a+"px"});this.sendMessage("contextDimensionChanged",{height:a,iframeName:window.name})}getValueQuerystring(a){a=a.replace(/[\[]/,"\\[").replace(/[\]]/,"\\]");a=(new RegExp("[\\?&]"+a+"=([^&#]*)")).exec(window.location.href);var b=null;null!=a&&(b=a[1]);return b}mandatory(a,b){if(!a)throw Error(`Property ${b} is mandatory`);}addHandler(a,b){this.getHandlers(a.messageType).push({handler:b,namespace:a.namespace})}registerPush(a,
+b){this.addHandler(a,b);this.sendMessage("wpnClientSubscribe",Object.assign(Object.assign({},a),{iframeName:window.name}))}unRegisterPush(a){this.sendMessage("wpnClientUnsubscribe",Object.assign(Object.assign({},a),{iframeName:window.name}))}unRegisterMessageHandlerInternal(a,b,c){if(a){var d=!1,e=this.getHandlers(a),g=0<e.length,f=[];for(const h of e)h.namespace!=b&&f.push(h);this.handlers[a]=f;0===f.length&&g&&(d=!0);c&&this.sendMessage("workspaceClientUnsubscribe",{iframeName:window.name,messageType:a,
+namespace:b});return d}}executeDynamic(a,b,c,d){const e=this.getRandomNumber(),g={MessageId:e};d&&d.relay&&(g.relay=!0);const f=b+e;this.unRegisterMessageHandler(f);this.registerMessageHandler(f,h=>{c(h);this.unRegisterMessageHandler(f)});this.sendMessage(a,g)}init(){window.postMessage&&window.addEventListener&&window.addEventListener("message",a=>this.onMessageEvent(a),!1);"complete"===document.readyState?setTimeout(()=>{this.ready()}):document.addEventListener&&this.attach()}attach(){this.loadListener=
+a=>{this.detach();this.ready()};document.addEventListener("DOMContentLoaded",this.loadListener,!1);window.addEventListener("load",this.loadListener,!1)}detach(){this.loadListener&&(document.removeEventListener("DOMContentLoaded",this.loadListener,!1),window.removeEventListener("load",this.loadListener,!1),this.loadListener=null)}ready(){this.isReady||(this.isReady=!0,window.opener||this.sendMessage("initClient",window.name),this.registerMessageHandler("relayFrameMessage",a=>this.onRelayMessage(a)))}checkWindowName(){const a=
+window.name!==this.originalWindowName;window.parent!==window&&a&&console.warn("The window name has been changed, which is not supported")}onMessageEvent(a){this.onMessage(a.data)}onRelayMessage(a){this.onMessage(JSON.stringify(a));const b=document.getElementsByTagName("iframe");for(const c of b)this.sendMessage("relayFrameMessage",a,c.contentWindow)}getHandlers(a){let b=this.handlers[a];b||(b=[],this.handlers[a]=b);return b}parseMessage(a){if(!a)return null;let b;try{b=JSON.parse(a)}catch(c){return null}return b.type?
+b:null}onMessage(a){var b=this.parseMessage(a);if(b){a=b.type;b=b.data;var c=this.getHandlers(a);this.deliver(c,b,a);c=this.getHandlers("*");this.deliver(c,b,a)}}deliver(a,b,c){for(const d of a)try{d.handler(b,c)}catch(e){}}trySendOpener(a){try{window.opener.infor.companyon.client.sendMessageProxy(a),window.opener.focus(),window.opener.document.focus()}catch(b){}}trySendMobile(a){try{this.detectMobileOS(),this.isIOS?webkit.messageHandlers.callbackHandler.postMessage(a):this.isAndroid&&InforGoAndroid.getLoadedPageInfo(a)}catch(b){}}getRandomNumber(){return""+
+(new Date).getTime()+Math.floor(1E4*Math.random())}detectMobileOS(){if(!this.mobileOS){var a=this.resolveMobileOS();"iOS"==a&&"undefined"!==typeof webkit&&webkit.messageHandlers?this.isIOS=!0:"Android"==a&&"undefined"!==typeof InforGoAndroid&&(this.isAndroid=!0);this.mobileOS=a}}resolveMobileOS(){var a=navigator.userAgent||navigator.vendor||window.opera;return/windows phone/i.test(a)?"Windows Phone":/android/i.test(a)?"Android":/iPad|iPhone|iPod/.test(a)&&!window.MSStream?"iOS":"unknown"}}
+"undefined"==typeof infor&&(infor={});"undefined"==typeof infor.companyon&&(infor.companyon={});infor.companyon.client=new CompanyonClient;
+</script>
+
+</body>
+</html>
