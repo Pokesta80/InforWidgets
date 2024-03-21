@@ -1,20 +1,27 @@
 <!DOCTYPE html>
 <html>
 <body>
-<h1>Inventory Lookup</h1>
-<h2>Lookup using onpaste Event</h2>
+<h1>Barcode Scanner Capture</h1>
+<h3>Paste into the target field to trigger a message</h3>
 
-<input type="text" onpaste="myFunction()" value="Paste something here!" size="40">
+<input type="text" id="barcodeInput" size="40">
 
-<p id="demo"></p>
+<p id="lastScan"></p>
+<p id="lastMessage"></p>
 
 <script>
-function myFunction() {
-  document.getElementById("demo").innerHTML = "You pasted text!";
-
-  let data = {yourparam1:"ACME Studios" , yourparam2: 21};
-  infor.companyon.client.sendMessage("TroyTest", data);
-}
+barcodeInput.onpaste = function(event) {
+  let messageType = "BarcodeScannerMessage"
+  let data = {barcode: ''};
+  
+  let barcodeValue = event.clipboardData.getData('text/plain');
+  data.barcode = barcodeValue.trim();
+  
+  document.getElementById("lastScan").innerHTML = "Last Barcode: " + data.barcode;
+  document.getElementById("lastMessage").innerHTML = messageType + ": " + JSON.stringify(data);
+  
+  infor.companyon.client.sendMessage(messageType, data);
+};
 
 /*! 
  *  Infor OS Portal Companyon Client - v2.3.1
